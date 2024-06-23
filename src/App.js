@@ -10,7 +10,7 @@ function App() {
 
   const getFile = async () => {
     try {
-      const data = await fetch("http://localhost:3200/download-zip")
+      fetch("http://localhost:3200/download-zip")
         .then((response) => {
           if (!response.ok) {
             throw new Error("Network response was not ok");
