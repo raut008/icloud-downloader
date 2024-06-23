@@ -18,6 +18,17 @@ const VerificationForm = ({ showOrHideLoader }) => {
     }
   };
 
+  const handleKeyDown = (index, event) => {
+    if (event.key === "Backspace" && inputs[index] === "") {
+      if (index > 0) {
+        document.getElementById(`input-${index - 1}`).focus();
+        const newInputs = [...inputs];
+        newInputs[index - 1] = "";
+        setInputs(newInputs);
+      }
+    }
+  };
+  
   const handleSubmit = async (event) => {
     event.preventDefault();
     showOrHideLoader(true);
@@ -53,6 +64,7 @@ const VerificationForm = ({ showOrHideLoader }) => {
             maxLength="1"
             value={value}
             onChange={(e) => handleChange(index, e.target.value)}
+            onKeyDown={(e) => handleKeyDown(index, e)}
             className={styles.input} // Apply styles from module.scss
           />
         ))}
