@@ -15,8 +15,7 @@ const LoginForm = () => {
       pwd,
     };
 
-    const response = await post("http://localhost:5000/login", obj);
-    
+    const response = await post("http://localhost:3200/login", obj);
   };
 
   return (

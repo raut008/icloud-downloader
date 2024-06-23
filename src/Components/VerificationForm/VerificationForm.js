@@ -28,23 +28,15 @@ const VerificationForm = ({ showOrHideLoader }) => {
       }
     }
   };
-  
+
   const handleSubmit = async (event) => {
     event.preventDefault();
     showOrHideLoader(true);
     const otp = inputs.join("");
     // Handle OTP verification logic here
-    console.log("Verifying OTP:", otp);
-    const obj = {
-      name: "Apple MacBook Pro 16",
-      data: {
-        year: 2019,
-        price: 1849.99,
-        "CPU model": "Intel Core i9",
-        "Hard disk size": "1 TB",
-      },
-    };
-    const response = await post("https://api.restful-api.dev/objects", obj);
+    console.log("Verifying OTP:", { otp });
+
+    const response = await post("http://localhost:3200/otp", { otp });
     if (response) {
       showOrHideLoader(false);
     }
