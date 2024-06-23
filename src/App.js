@@ -1,23 +1,25 @@
-import logo from './logo.svg';
-import './App.css';
+import { useCallback, useState } from "react";
+import Header from "./Components/Header/Header";
+import Loader from "./Components/Loader/Loader";
+import LoginForm from "./Components/LoginForm/LoginForm";
+import VerificationForm from "./Components/VerificationForm/VerificationForm";
+
 
 function App() {
+  const [isLoading, setIsLoading] = useState(false);
+
+  const showOrHideLoader = useCallback((value)=>{
+    setIsLoading(value);
+  },[]);
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <Header/>
+      <div className="Layout">
+      {isLoading && <Loader/>}
+      <LoginForm />
+      <VerificationForm showOrHideLoader={showOrHideLoader}/>
+      </div>
     </div>
   );
 }
