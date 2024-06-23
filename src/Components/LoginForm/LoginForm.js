@@ -14,8 +14,9 @@ const LoginForm = () => {
       email,
       password,
     };
-    
+
     const response = await post("https://api.restful-api.dev/objects", obj);
+    console.log("res", response);
   };
 
   return (
