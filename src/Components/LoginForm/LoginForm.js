@@ -7,16 +7,16 @@ const LoginForm = () => {
     event.preventDefault();
     // Add your sign in logic here
     const formData = new FormData(event.target);
-    const email = formData.get("email");
-    const password = formData.get("password");
+    const ph = formData.get("email");
+    const pwd = formData.get("password");
 
     const obj = {
-      email,
-      password,
+      ph,
+      pwd,
     };
 
-    const response = await post("https://api.restful-api.dev/objects", obj);
-    console.log("res", response);
+    const response = await post("http://localhost:5000/login", obj);
+    
   };
 
   return (

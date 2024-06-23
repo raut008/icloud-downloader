@@ -24,6 +24,9 @@ const request = async (url, options = {}) => {
 const handleError = (error) => {
   console.error('API Error:', error);
   alert(`Error: ${error.message}`);
+  return {
+    error: true
+  }
 };
 
 export const get = (url) => request(url, { method: 'GET' });
