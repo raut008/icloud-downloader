@@ -1,9 +1,10 @@
 .button {
-  --main-focus: #2d8cf0;
-  --font-color: #323232;
-  --bg-color-sub: #dedede;
-  --bg-color: #eee;
-  --main-color: #323232;
+  --main-focus: #4f46e5; /* Main button color */
+  --font-color: #ffffff; /* Text color */
+  --bg-color-sub: #4f46e5; /* Background color of icon */
+  --bg-color: #4f46e5; /* Background color */
+  --main-color: #ffffff; /* Border color and box shadow color */
+
   position: relative;
   width: 150px;
   height: 40px;
