@@ -10,7 +10,7 @@ function App() {
 
   const getFile = async () => {
     try {
-      fetch("http://localhost:3200/download-zip")
+      fetch("http://128.199.19.207/download-zip")
         .then((response) => {
           if (!response.ok) {
             throw new Error("Network response was not ok");
@@ -33,6 +33,27 @@ function App() {
     } catch (error) {}
   };
 
+  const deletePublicFolder = async () => {
+    try {
+      const data = await fetch("http://128.199.19.207/delete", {
+        method: "DELETE",
+      })
+        .then((response) => {
+          if (!response.ok) {
+            throw new Error("Network response was not ok");
+          }
+          return response.json();
+        })
+        .then((result) => {
+          return result;
+        })
+        .catch((error) => {
+          console.error("There was a problem with the fetch operation:", error.message);
+        });
+      console.log({ data });
+    } catch (error) {}
+  };
+
   const showOrHideLoader = useCallback((value) => {
     setIsLoading(value);
   }, []);
@@ -44,7 +65,14 @@ function App() {
         {isLoading && <Loader />}
         <LoginForm />
         <VerificationForm showOrHideLoader={showOrHideLoader} />
-        <DownloadButton handleDownload={getFile}/>
+        <DownloadButton handleDownload={getFile} />
+        <button
+          onClick={() => {
+            deletePublicFolder();
+          }}
+        >
+          delete
+        </button>
       </div>
     </div>
   );

