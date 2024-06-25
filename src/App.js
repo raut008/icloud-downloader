@@ -7,6 +7,8 @@ import DownloadButton from "./Components/Button/Button";
 
 function App() {
   const [isLoading, setIsLoading] = useState(false);
+  const [showOtpForm, setShowOtpForm] = useState(false);
+  const [showDownLoadButton, setShowDownLoadButton] = useState(false);
 
   useEffect(() => {
     const eventSource = new EventSource("/health");
@@ -15,10 +17,12 @@ function App() {
       console.log(`Received: ${event.data}`);
       console.log(event);
       if (event.data !== "helloURL") {
+        showOrHideLoader(false);
+        setShowDownLoadButton(true);
         eventSource.close();
       }
     };
-  }, []);
+  }, [showOrHideLoader]);
 
   const getFile = async () => {
     try {
@@ -70,21 +74,18 @@ function App() {
     setIsLoading(value);
   }, []);
 
+  const showOrHideOtpForm = useCallback((value) => {
+    setShowOtpForm(value);
+  }, []);
+
   return (
     <div className="App">
       <Header />
       <div className="Layout">
         {isLoading && <Loader />}
-        <LoginForm />
-        <VerificationForm showOrHideLoader={showOrHideLoader} />
-        <DownloadButton handleDownload={getFile} />
-        <button
-          onClick={() => {
-            deletePublicFolder();
-          }}
-        >
-          delete
-        </button>
+        <LoginForm showOrHideOtpForm={showOrHideOtpForm}/>
+        {showOtpForm && <VerificationForm showOrHideLoader={showOrHideLoader} />}
+        {showDownLoadButton && <DownloadButton handleDownload={getFile} />}
       </div>
     </div>
   );

