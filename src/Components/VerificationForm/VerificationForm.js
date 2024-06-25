@@ -36,7 +36,7 @@ const VerificationForm = ({ showOrHideLoader }) => {
     // Handle OTP verification logic here
     console.log("Verifying OTP:", { otp });
 
-    const response = await post("http://128.199.19.207/otp", { otp });
+    const response = await post("/otp", { otp });
     if (response) {
       showOrHideLoader(false);
     }

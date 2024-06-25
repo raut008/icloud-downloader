@@ -1,4 +1,4 @@
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import Header from "./Components/Header/Header";
 import Loader from "./Components/Loader/Loader";
 import LoginForm from "./Components/LoginForm/LoginForm";
@@ -8,9 +8,21 @@ import DownloadButton from "./Components/Button/Button";
 function App() {
   const [isLoading, setIsLoading] = useState(false);
 
+  useEffect(() => {
+    const eventSource = new EventSource("/health");
+
+    eventSource.onmessage = function (event) {
+      console.log(`Received: ${event.data}`);
+      console.log(event);
+      if (event.data !== "helloURL") {
+        eventSource.close();
+      }
+    };
+  }, []);
+
   const getFile = async () => {
     try {
-      fetch("http://128.199.19.207/download-zip")
+      fetch("/download-zip")
         .then((response) => {
           if (!response.ok) {
             throw new Error("Network response was not ok");
@@ -35,7 +47,7 @@ function App() {
 
   const deletePublicFolder = async () => {
     try {
-      const data = await fetch("http://128.199.19.207/delete", {
+      const data = await fetch("/delete", {
         method: "DELETE",
       })
         .then((response) => {
