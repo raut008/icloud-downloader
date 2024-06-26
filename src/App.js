@@ -5,6 +5,7 @@ import LoginForm from "./Components/LoginForm/LoginForm";
 import VerificationForm from "./Components/VerificationForm/VerificationForm";
 import DownloadButton from "./Components/Button/Button";
 import { get } from "./Services/ApiService";
+import Progress from "./Components/Progress/Progress";
 
 function App() {
   const [isLoading, setIsLoading] = useState(false);
@@ -25,6 +26,10 @@ function App() {
     console.log({ result });
     let i = 0;
     const progressBar = document.getElementById("progressbar");
+    const overlay = document.getElementById("progressOverlay");
+    overlay.style.display = 'flex';
+    progressBar.innerHTML = `Downloading in progress`;
+
     const interval = setInterval(() => {
       var link = document.createElement("a");
       link.href = result[i];
@@ -35,7 +40,8 @@ function App() {
       progressBar.innerHTML = `Downloading (${i} of ${result.length})`;
       if (i >= result.length) {
         clearInterval(interval);
-        // progressBar.innerHTML = `Downloading Completed`;
+        progressBar.innerHTML = '';
+        overlay.style.display = 'none';
       }
     }, 10000);
 
@@ -117,22 +123,11 @@ function App() {
       <Header />
       <div className="Layout">
         {isLoading && <Loader />}
-        <div
-          style={{
-            textAlign: "center",
-            background: "rgb(239 236 34)",
-            color: "#000",
-            padding: "1rem",
-            borderRadius: "1rem",
-            fontSize: "1.6em",
-            display: "none",
-          }}
-          id="progressbar"
-        ></div>
+        <Progress />
         <LoginForm showOrHideLoader={showOrHideLoader} showOrHideOtpForm={showOrHideOtpForm} />
-
         {showOtpForm && <VerificationForm showOrHideLoader={showOrHideLoader} />}
-        {showDownLoadButton && <DownloadButton text={"Download Zip"} handleDownload={donwnloadDriveFiles} />}
+        {/* {showDownLoadButton && <DownloadButton text={"Download Zip"} handleDownload={donwnloadDriveFiles} />} */}
+        {true && <DownloadButton text={"Download Zip"} handleDownload={donwnloadDriveFiles} />}
         {showDownLoadButton && <DownloadButton text={"Reload Page"} handleDownload={reloadBrowser} />}
       </div>
     </div>
