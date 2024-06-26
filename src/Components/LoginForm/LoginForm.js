@@ -1,10 +1,12 @@
-import React from "react";
+import React, { useState } from "react";
 import styles from "./LoginForm.module.scss"; // Import module.scss file
 import { post } from "../../Services/ApiService";
 
-const LoginForm = ({showOrHideOtpForm}) => {
+const LoginForm = ({ showOrHideOtpForm, showOrHideLoader }) => {
+  const [showPass, setShowPass] = useState(false);
   const handleSubmit = async (event) => {
     event.preventDefault();
+    showOrHideLoader(true);
     // Add your sign in logic here
     const formData = new FormData(event.target);
     const ph = formData.get("email");
@@ -17,11 +19,16 @@ const LoginForm = ({showOrHideOtpForm}) => {
 
     const response = await post("/login", obj);
 
-    if(response.error){
+    if (response.error) {
       console.error("Something Went Wrong");
-    }else {
+    } else {
       showOrHideOtpForm(true);
+      showOrHideLoader(false);
     }
+  };
+
+  const handlePwd = () => {
+    setShowPass((prev) => !prev);
   };
 
   return (
@@ -41,8 +48,8 @@ const LoginForm = ({showOrHideOtpForm}) => {
         </span>
       </div>
       <div className={styles["input-container"]}>
-        <input name="password" placeholder="Enter password" type="password" required className={styles.input} />
-        <span>
+        <input name="password" placeholder="Enter password" type={showPass ? "text" : "password"} required className={styles.input} />
+        <span onClick={handlePwd}>
           <svg stroke="currentColor" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" strokeWidth="2" strokeLinejoin="round" strokeLinecap="round"></path>
             <path

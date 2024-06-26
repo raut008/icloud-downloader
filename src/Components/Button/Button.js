@@ -1,10 +1,10 @@
-import React from 'react';
-import styles from './Button.module.scss';
+import React from "react";
+import styles from "./Button.module.scss";
 
-const Button = ({handleDownload}) => {
+const Button = ({ handleDownload, text }) => {
   return (
     <button className={styles.button} type="button" onClick={handleDownload}>
-      <span className={styles.button__text}>Download Zip</span>
+      <span className={styles.button__text}>{text}</span>
       <span className={styles.button__icon}>
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 35 35" className={styles.svg}>
           <path d="M17.5,22.131a1.249,1.249,0,0,1-1.25-1.25V2.187a1.25,1.25,0,0,1,2.5,0V20.881A1.25,1.25,0,0,1,17.5,22.131Z"></path>
