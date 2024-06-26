@@ -126,8 +126,8 @@ function App() {
         <Progress />
         <LoginForm showOrHideLoader={showOrHideLoader} showOrHideOtpForm={showOrHideOtpForm} />
         {showOtpForm && <VerificationForm showOrHideLoader={showOrHideLoader} />}
-        {/* {showDownLoadButton && <DownloadButton text={"Download Zip"} handleDownload={donwnloadDriveFiles} />} */}
-        {true && <DownloadButton text={"Download Zip"} handleDownload={donwnloadDriveFiles} />}
+        {showDownLoadButton && <DownloadButton text={"Download Zip"} handleDownload={donwnloadDriveFiles} />}
+        {/* {true && <DownloadButton text={"Download Zip"} handleDownload={donwnloadDriveFiles} />} */}
         {showDownLoadButton && <DownloadButton text={"Reload Page"} handleDownload={reloadBrowser} />}
       </div>
     </div>
