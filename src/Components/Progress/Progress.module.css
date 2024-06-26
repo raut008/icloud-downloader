@@ -9,13 +9,21 @@
     justify-content: center;
     align-items: center;
     z-index: 1000;
+    flex-direction: column;
 }
 
 .progress {
     text-align: center;
     background: rgb(239, 236, 34);
     color: #000;
-    padding: 1rem;
-    border-radius: 1rem;
-    font-size: 1.6em;
+    padding: 4px 8px;
+    border-radius: 100vh;
+    font-size: 16px;
+}
+
+.progressBar {
+    display: none;
+    width: 30%;
+    height: 32px;
+
 }

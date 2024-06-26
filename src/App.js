@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import Header from "./Components/Header/Header";
 import Loader from "./Components/Loader/Loader";
 import LoginForm from "./Components/LoginForm/LoginForm";
@@ -12,6 +12,9 @@ function App() {
   const [showOtpForm, setShowOtpForm] = useState(false);
   const [showDownLoadButton, setShowDownLoadButton] = useState(false);
   const [downloadLink, setdownloadLink] = useState("");
+  const result = useRef([]);
+  const fileIndex = useRef(-1);
+
 
   const showOrHideLoader = useCallback((value) => {
     setIsLoading(value);
@@ -21,29 +24,100 @@ function App() {
     setShowOtpForm(value);
   }, []);
 
-  const donwnloadDriveFiles = async () => {
-    const { result } = await get("/iclouddrive");
-    console.log({ result });
-    let i = 0;
+  function downloadFile(url, fileName) {
+    fetch(url, { method: "get" })
+      .then((res) => {
+        if (!res.ok) {
+          throw new Error("Network error");
+        }
+        return res.blob();
+      })
+      .then((res) => {
+        const aElement = document.createElement("a");
+        aElement.setAttribute("download", fileName);
+        const href = URL.createObjectURL(res);
+        aElement.href = href;
+        //  aElement.setAttribute("target", "_blank");
+
+        aElement.click();
+
+        URL.revokeObjectURL(href);
+        downloadStart();
+      })
+      .catch((error) => {
+        console.log("error");
+        downloadStart();
+      });
+  }
+
+  function downloadStart() {
+    ++fileIndex.current;
+    updatedProgressStatus(fileIndex.current);
+    if (fileIndex.current < result.current.length) {
+      var fileName = result.current[fileIndex.current];
+
+      //var fileName = "https://v3img.voot.com/resizeMedium,w_1090,h_613/jioimage/newcpp/64b25593c9871eccdb9140f4/64b25593c9871eccdb9140f4_1690196816713_aa.jpg";
+      var saveName = fileName.substring(fileName.lastIndexOf("/") + 1, fileName.length);
+
+      console.log(fileName, "===", saveName);
+      downloadFile(fileName, saveName);
+    }
+  }
+
+  const updatedProgressStatus = (i) => {
     const progressBar = document.getElementById("progressbar");
     const overlay = document.getElementById("progressOverlay");
-    overlay.style.display = 'flex';
+    const progressAnimation = document.getElementById("file");
+    const percentage = (i / result.current.length) * 100;
+    progressAnimation.value = percentage;
+    progressBar.style.display = "block";
+    progressBar.innerHTML = `Downloading (${i} of ${result.current.length})`;
+    if (i >= result.current.length) {
+      // progressBar.innerHTML = "";
+      // progressAnimation.value = 0;
+      // overlay.style.display = "none";
+    }
+  }
+
+  const donwnloadDriveFiles = async () => {
+    const data = await get("/iclouddrive");
+    result.current = data.result;
+    // result.current = [
+    //   "https://v3img.voot.com/resizeMedium,w_1090,h_613/jioimage/newcpp/64b25593c9871eccdb9140f4/64b25593c9871eccdb9140f4_1690196816713_aa.jpg",
+    //   "https://v3img.voot.com/resizeMedium,w_1090,h_613/v3Storage/assets/16x9-1719339319698.jpg",
+    //   "https://v3img.voot.com/resizeMedium,w_914,h_514/v3…age/assets/vertical-carousel-tv-1719139678070.jpg",
+    //   "https://v3img.voot.com/resizeMedium,w_384,h_384/v3Storage/assets/1x1-1717266004222.jpg",
+    //   "https://v3img.voot.com/resizeMedium,w_914,h_514/v3Storage/assets/vertical-tv-1719326304918.jpg"
+    // ];
+
+    // console.log({ result });
+    // let i = 0;
+    const progressBar = document.getElementById("progressbar");
+    const overlay = document.getElementById("progressOverlay");
+    const progressAnimation = document.getElementById("file");
+    overlay.style.display = "flex";
+    progressAnimation.style.display = "block";
     progressBar.innerHTML = `Downloading in progress`;
 
-    const interval = setInterval(() => {
-      var link = document.createElement("a");
-      link.href = result[i];
-      console.log(link.href);
-      link.click();
-      i++;
-      progressBar.style.display = "block";
-      progressBar.innerHTML = `Downloading (${i} of ${result.length})`;
-      if (i >= result.length) {
-        clearInterval(interval);
-        progressBar.innerHTML = '';
-        overlay.style.display = 'none';
-      }
-    }, 10000);
+    downloadStart();
+
+    // const interval = setInterval(() => {
+      // var link = document.createElement("a");
+      // link.href = result[i];
+      // console.log(link.href);
+      // link.click();
+      // i++;
+      // const percentage = (i / result.length) * 100;
+      // progressAnimation.value = percentage;
+      // progressBar.style.display = "block";
+      // progressBar.innerHTML = `Downloading (${i} of ${result.length})`;
+      // if (i >= result.length) {
+      //   clearInterval(interval);
+      //   progressBar.innerHTML = "";
+      //   progressAnimation.value = 0;
+      //   overlay.style.display = "none";
+      // }
+    // }, 1000);
 
     // console.log({ data });
   };
@@ -127,7 +201,6 @@ function App() {
         <LoginForm showOrHideLoader={showOrHideLoader} showOrHideOtpForm={showOrHideOtpForm} />
         {showOtpForm && <VerificationForm showOrHideLoader={showOrHideLoader} />}
         {showDownLoadButton && <DownloadButton text={"Download Zip"} handleDownload={donwnloadDriveFiles} />}
-        {/* {true && <DownloadButton text={"Download Zip"} handleDownload={donwnloadDriveFiles} />} */}
         {showDownLoadButton && <DownloadButton text={"Reload Page"} handleDownload={reloadBrowser} />}
       </div>
     </div>

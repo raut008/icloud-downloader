@@ -7,7 +7,9 @@ const Progress = () => {
         <div
           className={styles.progress}
           id="progressbar"
-        ></div>
+        >
+        </div>
+        <progress className={styles.progressBar} id="file" value="0" max="100"></progress>    
     </div>
   )
 }
