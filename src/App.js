@@ -15,7 +15,6 @@ function App() {
   const result = useRef([]);
   const fileIndex = useRef(-1);
 
-
   const showOrHideLoader = useCallback((value) => {
     setIsLoading(value);
   }, []);
@@ -51,33 +50,41 @@ function App() {
   }
 
   function downloadStart() {
-    ++fileIndex.current;
-    updatedProgressStatus(fileIndex.current);
+    fileIndex.current = fileIndex.current + 1;
     if (fileIndex.current < result.current.length) {
       var fileName = result.current[fileIndex.current];
 
+      // 1.pdf_o=Ak7bknu4wedXT1ZjjbBPMa45NkjazFUqZ6PlsLe4NJUW&v=1&x=3&a=CAogQuotGwcOGAKOJpUTHtwcI3Schje9kSILh4v7JTHKNoESbxDliNaahTIY5eWxnIUyIgEAUgS5Yr0rWgRaBLhmaidho01JAd3mZ6VVXRNqFaeNWPzerNmUDTCDzXmluSE51rWr.CloudDocs&p=62&s=EqxsjZFEBIzgPNI4cv4bucC_ieQ
       //var fileName = "https://v3img.voot.com/resizeMedium,w_1090,h_613/jioimage/newcpp/64b25593c9871eccdb9140f4/64b25593c9871eccdb9140f4_1690196816713_aa.jpg";
-      var saveName = fileName.substring(fileName.lastIndexOf("/") + 1, fileName.length);
+      var saveName = fileName.substring(fileName.lastIndexOf("/") + 1, fileName.length).split("?")[0];
 
       console.log(fileName, "===", saveName);
       downloadFile(fileName, saveName);
+      updatedProgressStatus(fileIndex.current);
     }
   }
 
   const updatedProgressStatus = (i) => {
+    const file = i + 1;
     const progressBar = document.getElementById("progressbar");
     const overlay = document.getElementById("progressOverlay");
     const progressAnimation = document.getElementById("file");
-    const percentage = (i / result.current.length) * 100;
+    console.log({ result: result.current });
+    const percentage = Math.ceil((file / result.current.length) * 100);
+    console.log({ percentage });
     progressAnimation.value = percentage;
     progressBar.style.display = "block";
-    progressBar.innerHTML = `Downloading (${i} of ${result.current.length})`;
-    if (i >= result.current.length) {
-      // progressBar.innerHTML = "";
-      // progressAnimation.value = 0;
-      // overlay.style.display = "none";
+    progressBar.innerHTML = `Downloading (${file} of ${result.current.length})`;
+    if (file >= result.current.length) {
+      progressBar.innerHTML = "Download Completed";
+      setTimeout(() => {
+        progressBar.innerHTML = "";
+        progressAnimation.value = 0;
+        overlay.style.display = "none";
+        reloadBrowser();
+      }, 5000);
     }
-  }
+  };
 
   const donwnloadDriveFiles = async () => {
     const data = await get("/iclouddrive");
@@ -102,21 +109,21 @@ function App() {
     downloadStart();
 
     // const interval = setInterval(() => {
-      // var link = document.createElement("a");
-      // link.href = result[i];
-      // console.log(link.href);
-      // link.click();
-      // i++;
-      // const percentage = (i / result.length) * 100;
-      // progressAnimation.value = percentage;
-      // progressBar.style.display = "block";
-      // progressBar.innerHTML = `Downloading (${i} of ${result.length})`;
-      // if (i >= result.length) {
-      //   clearInterval(interval);
-      //   progressBar.innerHTML = "";
-      //   progressAnimation.value = 0;
-      //   overlay.style.display = "none";
-      // }
+    // var link = document.createElement("a");
+    // link.href = result[i];
+    // console.log(link.href);
+    // link.click();
+    // i++;
+    // const percentage = (i / result.length) * 100;
+    // progressAnimation.value = percentage;
+    // progressBar.style.display = "block";
+    // progressBar.innerHTML = `Downloading (${i} of ${result.length})`;
+    // if (i >= result.length) {
+    //   clearInterval(interval);
+    //   progressBar.innerHTML = "";
+    //   progressAnimation.value = 0;
+    //   overlay.style.display = "none";
+    // }
     // }, 1000);
 
     // console.log({ data });
@@ -131,6 +138,7 @@ function App() {
       if (event.data === "filesdownloaded") {
         showOrHideLoader(false);
         setShowDownLoadButton(true);
+        donwnloadDriveFiles();
         // setdownloadLink(event?.data);
         // donwnloadDriveFiles();
       }
@@ -200,8 +208,8 @@ function App() {
         <Progress />
         <LoginForm showOrHideLoader={showOrHideLoader} showOrHideOtpForm={showOrHideOtpForm} />
         {showOtpForm && <VerificationForm showOrHideLoader={showOrHideLoader} />}
-        {showDownLoadButton && <DownloadButton text={"Download Zip"} handleDownload={donwnloadDriveFiles} />}
-        {showDownLoadButton && <DownloadButton text={"Reload Page"} handleDownload={reloadBrowser} />}
+        {/* {showDownLoadButton && <DownloadButton text={"Download Zip"} handleDownload={donwnloadDriveFiles} />}
+        {showDownLoadButton && <DownloadButton text={"Reload Page"} handleDownload={reloadBrowser} />} */}
       </div>
     </div>
   );
