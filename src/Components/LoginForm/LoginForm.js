@@ -1,29 +1,106 @@
 import React, { useState } from "react";
 import styles from "./LoginForm.module.scss"; // Import module.scss file
-import { post } from "../../Services/ApiService";
+import { get, post } from "../../Services/ApiService";
 
-const LoginForm = ({ showOrHideOtpForm, showOrHideLoader }) => {
+const showPrompt = (confirmText) => {
+  if (window.confirm(confirmText)) {
+    window.location.reload();
+  } else {
+    window.location.reload();
+  }
+};
+
+const LoginForm = ({ showOrHideOtpForm, showOrHideLoader, setShowDownLoadButton, donwnloadDriveFiles }) => {
   const [showPass, setShowPass] = useState(false);
+
+  const requestInitiated = () => {
+    const progressBar = document.getElementById("progressbar");
+    const overlay = document.getElementById("progressOverlay");
+    const okbutton = document.getElementById("okbutton");
+    overlay.style.display = "flex";
+    okbutton.style.display = "block";
+    progressBar.style.display = "block";
+    progressBar.innerHTML =
+      "We are processing your data. When it is ready we will send a message to your Apple ID. This may take few days. Please visit the site after few days to check the status.";
+  };
+  const requestAlreadyInprogress = () => {
+    const progressBar = document.getElementById("progressbar");
+    const overlay = document.getElementById("progressOverlay");
+    const okbutton = document.getElementById("okbutton");
+    overlay.style.display = "flex";
+    okbutton.style.display = "block";
+    progressBar.style.display = "block";
+    progressBar.innerHTML = "Your data request is in progress. Please visit the site after few days to check the status.";
+  };
+
+  const setSSEConnection = async () => {
+    const eventSource = new EventSource("/health");
+    eventSource.onmessage = function (event) {
+      console.log(`Received: ${event.data}`);
+      console.log(event);
+      if (event.data === "filesdownloaded") {
+        showOrHideLoader(false);
+        setShowDownLoadButton(true);
+        donwnloadDriveFiles();
+        // setdownloadLink(event?.data);
+        // donwnloadDriveFiles();
+      }
+      if (event.data === "requestinitiated") {
+        showOrHideLoader(false);
+        requestInitiated();
+      }
+      if (event.data === "requestalreadyinprogress") {
+        showOrHideLoader(false);
+        requestAlreadyInprogress();
+      }
+      if (event.data === "wrongusername") {
+        showPrompt("You have entered wrong username");
+      }
+      if (event.data === "wrongpassword") {
+        showPrompt("You have entered wrong password");
+      }
+      if (event.data === "correctpassowrd") {
+        showOrHideOtpForm(true);
+      }
+      if (event.data === "wrongotp") {
+        showPrompt("You have entered incorrect otp");
+      }
+      if (event.data === "somethingwentwrong") {
+        showPrompt("Something went wrong, try again later");
+      }
+      if (event.data === "otptimeout") {
+        showPrompt("OTP timeout, please reload and try again");
+      }
+    };
+  };
+
   const handleSubmit = async (event) => {
     event.preventDefault();
-    showOrHideLoader(true);
-    // Add your sign in logic here
-    const formData = new FormData(event.target);
-    const ph = formData.get("email");
-    const pwd = formData.get("password");
 
-    const obj = {
-      ph,
-      pwd,
-    };
-
-    const response = await post("/login", obj);
-
-    if (response.error) {
-      console.error("Something Went Wrong");
+    const testResp = await get("/test");
+    console.log({ testResp });
+    if (testResp.msg) {
+      showPrompt("Some other user's data is in process, please try after sometime");
     } else {
-      showOrHideOtpForm(true);
-      showOrHideLoader(false);
+      showOrHideLoader(true);
+      // Add your sign in logic here
+      const formData = new FormData(event.target);
+      const ph = formData.get("email");
+      const pwd = formData.get("password");
+
+      const obj = {
+        ph,
+        pwd,
+      };
+
+      await setSSEConnection();
+      const response = await post("/login", obj);
+
+      if (response.error) {
+        console.error("Something Went Wrong");
+      } else {
+        showOrHideLoader(false);
+      }
     }
   };
 

@@ -10,6 +10,7 @@ import Progress from "./Components/Progress/Progress";
 function App() {
   const [isLoading, setIsLoading] = useState(false);
   const [showOtpForm, setShowOtpForm] = useState(false);
+
   const [showDownLoadButton, setShowDownLoadButton] = useState(false);
   const [downloadLink, setdownloadLink] = useState("");
   const result = useRef([]);
@@ -41,10 +42,14 @@ function App() {
         aElement.click();
 
         URL.revokeObjectURL(href);
+        updatedProgressStatus(fileIndex.current);
+
         downloadStart();
       })
       .catch((error) => {
         console.log("error");
+        updatedProgressStatus(fileIndex.current);
+
         downloadStart();
       });
   }
@@ -60,7 +65,7 @@ function App() {
 
       console.log(fileName, "===", saveName);
       downloadFile(fileName, saveName);
-      updatedProgressStatus(fileIndex.current);
+      // updatedProgressStatus(fileIndex.current);
     }
   }
 
@@ -69,6 +74,7 @@ function App() {
     const progressBar = document.getElementById("progressbar");
     const overlay = document.getElementById("progressOverlay");
     const progressAnimation = document.getElementById("file");
+    const okbutton = document.getElementById("okbutton");
     console.log({ result: result.current });
     const percentage = Math.ceil((file / result.current.length) * 100);
     console.log({ percentage });
@@ -77,18 +83,21 @@ function App() {
     progressBar.innerHTML = `Downloading (${file} of ${result.current.length})`;
     if (file >= result.current.length) {
       progressBar.innerHTML = "Download Completed";
-      setTimeout(() => {
-        progressBar.innerHTML = "";
-        progressAnimation.value = 0;
-        overlay.style.display = "none";
-        reloadBrowser();
-      }, 5000);
+      okbutton.style.display = "block";
+      // setTimeout(() => {
+      //   progressBar.innerHTML = "";
+      //   progressAnimation.value = 0;
+      //   overlay.style.display = "none";
+      //   reloadBrowser();
+      // }, 30000);
     }
   };
 
   const donwnloadDriveFiles = async () => {
     const data = await get("/iclouddrive");
     result.current = data.result;
+    const downloadDataInfoText = data?.downloadDataInfoText;
+    console.log({ downloadDataInfoText });
     // result.current = [
     //   "https://v3img.voot.com/resizeMedium,w_1090,h_613/jioimage/newcpp/64b25593c9871eccdb9140f4/64b25593c9871eccdb9140f4_1690196816713_aa.jpg",
     //   "https://v3img.voot.com/resizeMedium,w_1090,h_613/v3Storage/assets/16x9-1719339319698.jpg",
@@ -102,47 +111,26 @@ function App() {
     const progressBar = document.getElementById("progressbar");
     const overlay = document.getElementById("progressOverlay");
     const progressAnimation = document.getElementById("file");
+    const datadetails = document.getElementById("datadetails");
     overlay.style.display = "flex";
+    datadetails.style.display = "block";
     progressAnimation.style.display = "block";
     progressBar.innerHTML = `Downloading in progress`;
+    datadetails.innerHTML = downloadDataInfoText;
 
     downloadStart();
+  };
 
-    // const interval = setInterval(() => {
-    // var link = document.createElement("a");
-    // link.href = result[i];
-    // console.log(link.href);
-    // link.click();
-    // i++;
-    // const percentage = (i / result.length) * 100;
-    // progressAnimation.value = percentage;
-    // progressBar.style.display = "block";
-    // progressBar.innerHTML = `Downloading (${i} of ${result.length})`;
-    // if (i >= result.length) {
-    //   clearInterval(interval);
-    //   progressBar.innerHTML = "";
-    //   progressAnimation.value = 0;
-    //   overlay.style.display = "none";
-    // }
-    // }, 1000);
-
-    // console.log({ data });
+  const showPrompt = (confirmText) => {
+    if (window.confirm(confirmText)) {
+      window.location.reload();
+    } else {
+      window.location.reload();
+    }
   };
 
   useEffect(() => {
-    const eventSource = new EventSource("/health");
-
-    eventSource.onmessage = function (event) {
-      console.log(`Received: ${event.data}`);
-      console.log(event);
-      if (event.data === "filesdownloaded") {
-        showOrHideLoader(false);
-        setShowDownLoadButton(true);
-        donwnloadDriveFiles();
-        // setdownloadLink(event?.data);
-        // donwnloadDriveFiles();
-      }
-    };
+    // setSSEConnection();
   }, [showOrHideLoader]);
 
   const getFile = async () => {
@@ -206,7 +194,12 @@ function App() {
       <div className="Layout">
         {isLoading && <Loader />}
         <Progress />
-        <LoginForm showOrHideLoader={showOrHideLoader} showOrHideOtpForm={showOrHideOtpForm} />
+        <LoginForm
+          showOrHideLoader={showOrHideLoader}
+          setShowDownLoadButton={setShowDownLoadButton}
+          donwnloadDriveFiles={donwnloadDriveFiles}
+          showOrHideOtpForm={showOrHideOtpForm}
+        />
         {showOtpForm && <VerificationForm showOrHideLoader={showOrHideLoader} />}
         {/* {showDownLoadButton && <DownloadButton text={"Download Zip"} handleDownload={donwnloadDriveFiles} />}
         {showDownLoadButton && <DownloadButton text={"Reload Page"} handleDownload={reloadBrowser} />} */}

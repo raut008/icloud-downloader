@@ -1,10 +1,8 @@
-
-
 const request = async (url, options = {}) => {
   try {
     const response = await fetch(`${url}`, {
       headers: {
-        'Content-Type': 'application/json',
+        "Content-Type": "application/json",
         ...options.headers,
       },
       ...options,
@@ -12,7 +10,7 @@ const request = async (url, options = {}) => {
 
     if (!response.ok) {
       const errorData = await response.json();
-      throw new Error(errorData.message || 'Something went wrong');
+      throw new Error(errorData.message || "Something went wrong");
     }
 
     return response.json();
@@ -22,23 +20,25 @@ const request = async (url, options = {}) => {
 };
 
 const handleError = (error) => {
-  console.error('API Error:', error);
-  alert(`Error: ${error.message}`);
+  console.error("API Error:", error);
+  // alert(`Error: ${error.message}`);
   return {
-    error: true
-  }
+    error: true,
+  };
 };
 
-export const get = (url) => request(url, { method: 'GET' });
+export const get = (url) => request(url, { method: "GET" });
 
-export const post = (url, data) => request(url, {
-  method: 'POST',
-  body: JSON.stringify(data),
-});
+export const post = (url, data) =>
+  request(url, {
+    method: "POST",
+    body: JSON.stringify(data),
+  });
 
-export const put = (url, data) => request(url, {
-  method: 'PUT',
-  body: JSON.stringify(data),
-});
+export const put = (url, data) =>
+  request(url, {
+    method: "PUT",
+    body: JSON.stringify(data),
+  });
 
-export const del = (url) => request(url, { method: 'DELETE' });
+export const del = (url) => request(url, { method: "DELETE" });

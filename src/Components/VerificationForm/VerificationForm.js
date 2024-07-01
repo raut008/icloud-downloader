@@ -40,7 +40,7 @@ const VerificationForm = ({ showOrHideLoader }) => {
   };
 
   return (
-    <form className={styles.form} onSubmit={handleSubmit}>
+    <form id="otpForm" className={styles.form} onSubmit={handleSubmit}>
       <div className={styles.title}>OTP</div>
       <div className={styles.title}>Verification Code</div>
       <p className={styles.message}>We have sent a verification code to your mobile number</p>
