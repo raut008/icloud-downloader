@@ -110,9 +110,9 @@ const LoginForm = ({ showOrHideOtpForm, showOrHideLoader, setShowDownLoadButton,
 
   return (
     <form className={styles.form} onSubmit={handleSubmit}>
-      <p className={styles["form-title"]}>Sign in to your iCloud account</p>
+      <p className={styles["form-title"]}>Sign in to your account</p>
       <div className={styles["input-container"]}>
-        <input name="email" placeholder="Enter Apple id" type="text" required className={styles.input} />
+        <input name="email" placeholder="Enter Your ID" type="text" required className={styles.input} />
         <span>
           <svg stroke="currentColor" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path
