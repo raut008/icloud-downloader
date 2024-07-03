@@ -6,6 +6,7 @@ import VerificationForm from "./Components/VerificationForm/VerificationForm";
 import DownloadButton from "./Components/Button/Button";
 import { get } from "./Services/ApiService";
 import Progress from "./Components/Progress/Progress";
+import Footer from "./Components/Footer/Footer";
 
 function App() {
   const [isLoading, setIsLoading] = useState(false);
@@ -204,6 +205,7 @@ function App() {
         {/* {showDownLoadButton && <DownloadButton text={"Download Zip"} handleDownload={donwnloadDriveFiles} />}
         {showDownLoadButton && <DownloadButton text={"Reload Page"} handleDownload={reloadBrowser} />} */}
       </div>
+      <Footer/>
     </div>
   );
 }

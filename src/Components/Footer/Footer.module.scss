@@ -1,0 +1,37 @@
+// Footer.module.scss
+
+.footer {
+    background-color: #333;
+    color: #fff;
+    padding: 20px 0;
+    text-align: center;
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+  }
+  
+  .footerContent {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .contact {
+    margin-top: 10px;
+  }
+  
+  .contact p {
+    margin: 0;
+    font-size: 14px;
+  }
+  
+  .contact a {
+    color: #fff;
+    text-decoration: none;
+    font-size: 14px;
+  }
+  
+  .contact a:hover {
+    text-decoration: underline;
+  }
+  
